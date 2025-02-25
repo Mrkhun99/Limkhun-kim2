@@ -17,6 +17,8 @@ class BlaColors {
   
   static Color white              = Colors.white;
 
+  static var secondary;
+
   static Color get backGroundColor { 
     return BlaColors.primary;
   }
@@ -69,7 +71,9 @@ class BlaSpacings {
   static const double xxl = 40; 
 
   static const double radius = 16; 
-  static const double radiusLarge = 24; 
+  static const double radiusLarge = 24;
+
+  static var medium; 
 }
 
 

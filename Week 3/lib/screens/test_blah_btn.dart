@@ -10,15 +10,16 @@ class BlaButtonTestScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            
             BlaButton(
               text: "Button with Icon",
               icon: Icons.star,
-              onPressed: () => print("Icon Button Clicked"),
+              onPressed: () => print("Icon Button Clicked"), label: '',
             ),
             SizedBox(height: 10),
             BlaButton(
               text: "Disabled Button",
-              onPressed: null, // Disabled state
+              onPressed: null, label: '', // Disabled state
             ),
           ],
         ),

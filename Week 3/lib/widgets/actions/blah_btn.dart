@@ -11,7 +11,7 @@ class BlaButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.isPrimary = true,
-    this.icon,
+    this.icon, required String label,
   }) : super(key: key);
 
   @override

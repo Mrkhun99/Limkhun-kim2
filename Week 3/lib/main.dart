@@ -6,7 +6,7 @@ import 'screens/test_blah_btn.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: BlaButtonTestScreen(), // Set test screen as the home screen
+    home: RidePrefScreen(), // Set test screen as the home screen
   ));
 }
 
