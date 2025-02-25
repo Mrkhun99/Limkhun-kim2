@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:week_3_blabla_project/screens/location_screen.dart';
 import 'package:week_3_blabla_project/widgets/actions/blah_btn.dart';
-import '../../../theme/theme.dart'; // Ensure this file contains BlaColors, BlaSpacings
-import '../../../utils/date_utils.dart' as MyDateUtils; // Alias for custom DateUtils
+import '../../../theme/theme.dart'; 
+import '../../../utils/date_utils.dart' as MyDateUtils; 
+import '../../../utils/animations_util.dart'; 
 
 class RidePrefForm extends StatefulWidget {
   final String? departureLocation;
   final String? arrivalLocation;
-  final DateTime departureDate;
+  final DateTime? departureDate; // ✅ Make this nullable, no default value
   final int requestedSeats;
   final void Function(String, String, DateTime, int) onSubmit;
 
-  RidePrefForm({
+  const RidePrefForm({
     Key? key,
     this.departureLocation,
     this.arrivalLocation,
-    DateTime? departureDate,
+    this.departureDate, // ✅ Default removed here
     this.requestedSeats = 1,
     required this.onSubmit,
-  })  : departureDate = departureDate ?? DateTime.now(),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   _RidePrefFormState createState() => _RidePrefFormState();
@@ -30,7 +31,6 @@ class _RidePrefFormState extends State<RidePrefForm> {
   late DateTime _selectedDate;
   late int _selectedSeats;
 
-  // Use MyDateUtils for your custom DateUtils class
   final MyDateUtils.DateUtils dateUtils = MyDateUtils.DateUtils();
 
   @override
@@ -38,7 +38,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
     super.initState();
     _departureController = TextEditingController(text: widget.departureLocation ?? '');
     _arrivalController = TextEditingController(text: widget.arrivalLocation ?? '');
-    _selectedDate = widget.departureDate;
+    _selectedDate = widget.departureDate ?? DateTime.now(); // ✅ Set default date here
     _selectedSeats = widget.requestedSeats;
   }
 
@@ -51,12 +51,21 @@ class _RidePrefFormState extends State<RidePrefForm> {
     });
   }
 
+  /// 🚦 Navigate to Location Picker with Animation
+  void _pickLocation(BuildContext context) {
+    Navigator.of(context).push(
+      AnimationUtils.createBottomToTopRoute(const LocationPickerScreen()),
+    );
+  }
+
+  /// 🗓️ Safe Date Picker with Valid Ranges
   void _pickDate(BuildContext context) async {
+    final today = DateTime.now();
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(Duration(days: 365)),
+      initialDate: _selectedDate.isBefore(today) ? today : _selectedDate,
+      firstDate: today,
+      lastDate: today.add(const Duration(days: 365)),
     );
     if (picked != null) {
       setState(() {
@@ -82,7 +91,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
             prefixIcon: Icon(Icons.location_on, color: BlaColors.primary),
           ),
         ),
-        SizedBox(height: BlaSpacings.medium ?? 16.0),
+        const SizedBox(height: 16.0),
 
         // 🔄 Switch Locations Button
         Center(
@@ -91,7 +100,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
             onPressed: _switchLocations,
           ),
         ),
-        SizedBox(height: BlaSpacings.medium ?? 16.0),
+        const SizedBox(height: 16.0),
 
         // Arrival Field
         TextField(
@@ -101,7 +110,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
             prefixIcon: Icon(Icons.flag, color: BlaColors.secondary ?? Colors.grey),
           ),
         ),
-        SizedBox(height: BlaSpacings.medium ?? 16.0),
+        const SizedBox(height: 16.0),
 
         // Date Picker
         GestureDetector(
@@ -109,15 +118,15 @@ class _RidePrefFormState extends State<RidePrefForm> {
           child: Row(
             children: [
               Icon(Icons.calendar_today, color: BlaColors.primary),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Text(
-                "Departure: ${dateUtils.formatDateTime(_selectedDate)}", // Use the alias
+                "Departure: ${dateUtils.formatDateTime(_selectedDate)}",
                 style: BlaTextStyles.body,
               ),
             ],
           ),
         ),
-        SizedBox(height: BlaSpacings.medium ?? 16.0),
+        const SizedBox(height: 16.0),
 
         // Seat Picker (Spinner)
         Row(
@@ -140,11 +149,12 @@ class _RidePrefFormState extends State<RidePrefForm> {
             ),
           ],
         ),
-        SizedBox(height: BlaSpacings.medium ?? 16.0),
+        const SizedBox(height: 16.0),
 
         // Search Button
         BlaButton(
           label: "Search",
+          text: "Search",
           onPressed: _isFormValid()
               ? () => widget.onSubmit(
                     _departureController.text,
@@ -152,7 +162,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
                     _selectedDate,
                     _selectedSeats,
                   )
-              : null, text: '',
+              : null,
         ),
       ],
     );
