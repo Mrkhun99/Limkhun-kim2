@@ -8,7 +8,7 @@ import '../../../utils/animations_util.dart';
 class RidePrefForm extends StatefulWidget {
   final String? departureLocation;
   final String? arrivalLocation;
-  final DateTime? departureDate; // ✅ Make this nullable, no default value
+  final DateTime? departureDate;
   final int requestedSeats;
   final void Function(String, String, DateTime, int) onSubmit;
 
@@ -16,7 +16,7 @@ class RidePrefForm extends StatefulWidget {
     Key? key,
     this.departureLocation,
     this.arrivalLocation,
-    this.departureDate, // ✅ Default removed here
+    this.departureDate, 
     this.requestedSeats = 1,
     required this.onSubmit,
   }) : super(key: key);
@@ -38,11 +38,11 @@ class _RidePrefFormState extends State<RidePrefForm> {
     super.initState();
     _departureController = TextEditingController(text: widget.departureLocation ?? '');
     _arrivalController = TextEditingController(text: widget.arrivalLocation ?? '');
-    _selectedDate = widget.departureDate ?? DateTime.now(); // ✅ Set default date here
+    _selectedDate = widget.departureDate ?? DateTime.now(); 
     _selectedSeats = widget.requestedSeats;
   }
 
-  /// 🔄 Swap departure and arrival locations
+  /// Swap departure and arrival locations
   void _switchLocations() {
     setState(() {
       String temp = _departureController.text;
@@ -58,7 +58,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
     );
   }
 
-  /// 🗓️ Safe Date Picker with Valid Ranges
+  /// Safe Date Picker with Valid Ranges
   void _pickDate(BuildContext context) async {
     final today = DateTime.now();
     DateTime? picked = await showDatePicker(
@@ -93,7 +93,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
         ),
         const SizedBox(height: 16.0),
 
-        // 🔄 Switch Locations Button
+        // Switch Locations Button
         Center(
           child: IconButton(
             icon: Icon(Icons.swap_vert, size: 30, color: BlaColors.primary),
