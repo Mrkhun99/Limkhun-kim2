@@ -51,7 +51,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
     });
   }
 
-  /// 🚦 Navigate to Location Picker with Animation
+  /// Navigate to Location Picker with Animation
   void _pickLocation(BuildContext context) {
     Navigator.of(context).push(
       AnimationUtils.createBottomToTopRoute(const LocationPickerScreen()),
