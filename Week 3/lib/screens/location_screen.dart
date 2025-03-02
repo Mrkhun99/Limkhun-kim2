@@ -1,38 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:week_3_blabla_project/screens/location_picker.dart';
+import 'package:week_3_blabla_project/widgets/actions/blah_btn.dart';
 
-class LocationPickerScreen extends StatelessWidget {
-  final Function(Location) onLocationSelected; // ✅ Ensure this is defined
+class LocationPickerTest extends StatelessWidget {
+  const LocationPickerTest({super.key});
 
-  const LocationPickerScreen({Key? key, required this.onLocationSelected})
-      : super(key: key);
+  void _onLocationSelected(String location) {
+    print("Selected Location: $location");
+  }
 
   @override
   Widget build(BuildContext context) {
-    void _selectLocation(Location location) {
-      onLocationSelected(location); // ✅ Call the callback function
-      Navigator.pop(context); // ✅ Return to previous screen
-    }
-
     return Scaffold(
-      appBar: AppBar(title: const Text("Pick a Location")),
-      body: ListView(
-        children: [
-          ListTile(
-            title: const Text("New York"),
-            onTap: () => _selectLocation(Location(name: "New York")),
-          ),
-          ListTile(
-            title: const Text("Los Angeles"),
-            onTap: () => _selectLocation(Location(name: "Los Angeles")),
-          ),
-        ],
+      appBar: AppBar(title: const Text("Location Picker Test")),
+      body: Center(
+        child: BlaButton(
+          label: "Pick a Location",
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LocationPicker(onLocationSelected: _onLocationSelected)),
+            );
+          },
+        ),
       ),
     );
   }
-}
-
-// ✅ Dummy Location Model
-class Location {
-  final String name;
-  Location({required this.name});
 }

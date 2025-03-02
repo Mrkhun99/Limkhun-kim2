@@ -1,59 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:week_3_blabla_project/model/ride/locations.dart';
-import '../../dummy_data/dummy_data.dart';
+import 'package:week_3_blabla_project/widgets/actions/blah_btn.dart';
 
-class LocationPickerScreen extends StatefulWidget {
-  final Function(Location) onLocationSelected; // Ensure this parameter exists
+class LocationPicker extends StatefulWidget {
+  final Function(String) onLocationSelected;
 
-  const LocationPickerScreen({Key? key, required this.onLocationSelected}) : super(key: key);
+  const LocationPicker({Key? key, required this.onLocationSelected}) : super(key: key);
 
   @override
-  _LocationPickerScreenState createState() => _LocationPickerScreenState();
+  _LocationPickerState createState() => _LocationPickerState();
 }
 
-class _LocationPickerScreenState extends State<LocationPickerScreen> {
-  List<Location> filteredLocations = fakeLocations; // Load dummy locations
+class _LocationPickerState extends State<LocationPicker> {
+  final List<String> locations = ["Paris", "London", "New York", "Berlin", "Tokyo"];
+  String? selectedLocation;
   TextEditingController searchController = TextEditingController();
-
-  void _filterLocations(String query) {
-    setState(() {
-      filteredLocations = fakeLocations
-          .where((location) => location.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Select a Location")),
+      appBar: AppBar(title: const Text("Pick a Location")),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: TextField(
               controller: searchController,
-              onChanged: _filterLocations,
-              decoration: InputDecoration(
-                hintText: "Search location...",
+              decoration: const InputDecoration(
+                labelText: "Search location",
                 prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
               ),
+              onChanged: (value) => setState(() {}),
             ),
           ),
+
           Expanded(
-            child: ListView.builder(
-              itemCount: filteredLocations.length,
-              itemBuilder: (context, index) {
-                final location = filteredLocations[index];
-                return ListTile(
-                  title: Text(location.name),
-                  onTap: () {
-                    widget.onLocationSelected(location); // Ensure this callback works
-                    Navigator.pop(context);
-                  },
-                );
-              },
+            child: ListView(
+              children: locations
+                  .where((location) => location.toLowerCase().contains(searchController.text.toLowerCase()))
+                  .map((location) => ListTile(
+                        title: Text(location),
+                        onTap: () {
+                          setState(() => selectedLocation = location);
+                        },
+                        trailing: selectedLocation == location
+                            ? const Icon(Icons.check, color: Colors.blue)
+                            : null,
+                      ))
+                  .toList(),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: BlaButton(
+              label: "Confirm",
+              onPressed: selectedLocation != null ? () => widget.onLocationSelected(selectedLocation!) : null,
             ),
           ),
         ],

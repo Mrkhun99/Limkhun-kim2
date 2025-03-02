@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:week_3_blabla_project/screens/location_picker.dart';
+import 'package:week_3_blabla_project/theme/theme.dart';
 import 'package:week_3_blabla_project/widgets/actions/blah_btn.dart';
+
 
 class RidePrefForm extends StatefulWidget {
   final Function(String departure, String arrival, DateTime date, int seats) onSearch;
@@ -17,6 +20,25 @@ class _RidePrefFormState extends State<RidePrefForm> {
   int seats = 1;
 
   bool get isSearchEnabled => departure != null && arrival != null;
+
+  void _pickLocation(bool isDeparture) async {
+    final selectedLocation = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LocationPicker(onLocationSelected: (location) {
+        Navigator.pop(context, location);
+      })),
+    );
+
+    if (selectedLocation != null) {
+      setState(() {
+        if (isDeparture) {
+          departure = selectedLocation;
+        } else {
+          arrival = selectedLocation;
+        }
+      });
+    }
+  }
 
   void _pickDate() async {
     DateTime? picked = await showDatePicker(
@@ -44,24 +66,30 @@ class _RidePrefFormState extends State<RidePrefForm> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          // Departure Field
-          TextField(
-            decoration: InputDecoration(
-              labelText: "Departure",
-              suffixIcon: Icon(Icons.location_on),
+          // Departure Picker
+          InkWell(
+            onTap: () => _pickLocation(true),
+            child: InputDecorator(
+              decoration: InputDecoration(
+                labelText: "Departure",
+                suffixIcon: const Icon(Icons.location_on),
+              ),
+              child: Text(departure ?? "Select Departure", style: BlaTextStyles.body),
             ),
-            onChanged: (value) => setState(() => departure = value),
           ),
 
           const SizedBox(height: 8),
 
-          // Arrival Field
-          TextField(
-            decoration: InputDecoration(
-              labelText: "Arrival",
-              suffixIcon: Icon(Icons.location_on),
+          // Arrival Picker
+          InkWell(
+            onTap: () => _pickLocation(false),
+            child: InputDecorator(
+              decoration: InputDecoration(
+                labelText: "Arrival",
+                suffixIcon: const Icon(Icons.location_on),
+              ),
+              child: Text(arrival ?? "Select Arrival", style: BlaTextStyles.body),
             ),
-            onChanged: (value) => setState(() => arrival = value),
           ),
 
           const SizedBox(height: 8),
