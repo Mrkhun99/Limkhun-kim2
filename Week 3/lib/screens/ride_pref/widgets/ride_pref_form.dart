@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:week_3_blabla_project/screens/location_picker.dart';
 import 'package:week_3_blabla_project/theme/theme.dart';
+import 'package:week_3_blabla_project/utils/animations_util.dart';
 import 'package:week_3_blabla_project/widgets/actions/blah_btn.dart';
 
 
@@ -24,9 +25,13 @@ class _RidePrefFormState extends State<RidePrefForm> {
   void _pickLocation(bool isDeparture) async {
     final selectedLocation = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => LocationPicker(onLocationSelected: (location) {
-        Navigator.pop(context, location);
-      })),
+      AnimationsUtil.createBottomToTopRoute(
+        LocationPicker(
+          onLocationSelected: (location) {
+            Navigator.pop(context, location);
+          },
+        ),
+      ),
     );
 
     if (selectedLocation != null) {
@@ -50,14 +55,6 @@ class _RidePrefFormState extends State<RidePrefForm> {
     if (picked != null) {
       setState(() => departureDate = picked);
     }
-  }
-
-  void _switchLocations() {
-    setState(() {
-      final temp = departure;
-      departure = arrival;
-      arrival = temp;
-    });
   }
 
   @override
