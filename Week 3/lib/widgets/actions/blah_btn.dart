@@ -1,39 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:week_3_blabla_project/theme/theme.dart';
+
+enum BlaButtonType { primary, secondary }
 
 class BlaButton extends StatelessWidget {
-  final String text;
+  final String label;
   final VoidCallback? onPressed;
-  final bool isPrimary;
+  final BlaButtonType type;
   final IconData? icon;
 
   const BlaButton({
     Key? key,
-    required this.text,
-    required this.onPressed,
-    this.isPrimary = true,
-    this.icon, required String label,
+    required this.label,
+    this.onPressed,
+    this.type = BlaButtonType.primary,
+    this.icon,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final isPrimary = type == BlaButtonType.primary;
+    
     return ElevatedButton(
-      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: isPrimary ? Colors.blue : Colors.grey,
-        foregroundColor: Colors.white,
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        backgroundColor: isPrimary ? BlaColors.primary : BlaColors.secondary,
+        foregroundColor: Colors.red,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
       ),
+      onPressed: onPressed,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null) ...[
-            Icon(icon, size: 18),
-            SizedBox(width: 8),
-          ],
-          Text(text, style: TextStyle(fontSize: 16)),
+          if (icon != null) Icon(icon, size: 20, color: Colors.white),
+          if (icon != null) const SizedBox(width: 8),
+          Text(label, style: BlaTextStyles.button),
         ],
       ),
     );
