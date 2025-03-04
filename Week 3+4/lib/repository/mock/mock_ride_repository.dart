@@ -1,57 +1,78 @@
-import 'package:week_3_blabla_project/repository/ride_repository.dart';
+
+import '../../dummy_data/dummy_data.dart';
 import '../../model/ride/ride.dart';
 import '../../model/ride_pref/ride_pref.dart';
-import '../../model/ridefilter.dart';
-import '../../model/ride/locations.dart';
+import '../../service/rides_service.dart';
+import '../ride_repository.dart';
 
-class MockRideRepository implements RidesRepository {
-  final List<Ride> _rides = [
-    Ride(
-      departureLocation: Location(name: "Battambang", country: Country.Cambodia),
+class MockRidesRepository implements RidesRepository {
+  final List<RidePreference> _ridePreferences = [
+    RidePreference(
+      departure: fakeLocations[40], // Battambang
+      arrival: fakeLocations[39], // Siem Reap
       departureDate: DateTime.now().add(Duration(hours: 5, minutes: 30)),
-      arrivalLocation: Location(name: "Siem Reap", country: Country.Cambodia),
-      arrivalDate: DateTime.now().add(Duration(hours: 8)),
-      driver: "Kannika",
-      duration: Duration(hours: 2),
-      acceptPets: false,
-      availableSeats: 2,
-      pricePerSeat: 10.0,
+      requestedSeats: 2,
     ),
-    Ride(
-      departureLocation: Location(name: "Battambang", country: Country.Cambodia),
+    RidePreference(
+      departure: fakeLocations[40], // Battambang
+      arrival: fakeLocations[39], // Siem Reap
       departureDate: DateTime.now().add(Duration(hours: 8)),
-      arrivalLocation: Location(name: "Siem Reap", country: Country.Cambodia),
-      arrivalDate: DateTime.now().add(Duration(hours: 10)),
-      driver: "Chaylim",
-      duration: Duration(hours: 2),
-      acceptPets: false,
-      availableSeats: 0,
-      pricePerSeat: 8.0,
+      requestedSeats: 0,
     ),
-    Ride(
-      departureLocation: Location(name: "Battambang", country: Country.Cambodia),
+    RidePreference(
+      departure: fakeLocations[40], // Battambang
+      arrival: fakeLocations[39], // Siem Reap
       departureDate: DateTime.now().add(Duration(hours: 5)),
-      arrivalLocation: Location(name: "Siem Reap", country: Country.Cambodia),
-      arrivalDate: DateTime.now().add(Duration(hours: 7)),
-      driver: "Mengtech",
-      duration: Duration(hours: 3),
-      acceptPets: false,
-      availableSeats: 1,
-      pricePerSeat: 12.0,
+      requestedSeats: 1,
+    ),
+    RidePreference(
+      departure: fakeLocations[40], // Battambang
+      arrival: fakeLocations[39], // Siem Reap
+      departureDate: DateTime.now().add(Duration(hours: 8)),
+      requestedSeats: 2,
+    ),
+    RidePreference(
+      departure: fakeLocations[40], // Battambang
+      arrival: fakeLocations[39], // Siem Reap
+      departureDate: DateTime.now().add(Duration(hours: 5)),
+      requestedSeats: 1,
     ),
   ];
 
   @override
-  List<Ride> getRides(RidePreference preference, RidesFilter? filter) {
-    List<Ride> filteredRides = _rides.where((ride) {
-      return ride.departureLocation.name == preference.departure.name &&
-             ride.arrivalLocation.name == preference.arrival.name;
-    }).toList();
+  List<Ride> getRides(
+    RidePreference preference,
+    RidesFilter? filter,
+    RideSortType? sortType,
+  ) {
+    final ridesService = RidesService();
 
-    if (filter != null && filter.petAccepted) {
-      filteredRides = filteredRides.where((ride) => ride.acceptPets).toList();
+    // Get filtered rides based on preference
+    List<Ride> rides = ridesService.getRidesFor(preference);
+
+    // Apply sorting if sort type is provided
+    if (sortType != null) {
+      switch (sortType) {
+        case RideSortType.departure:
+          rides.sort(
+            (a, b) =>
+                a.departureLocation.name.compareTo(b.departureLocation.name),
+          );
+          break;
+        case RideSortType.departureDate:
+          rides.sort((a, b) => a.departureDate.compareTo(b.departureDate));
+          break;
+        case RideSortType.arrival:
+          rides.sort(
+            (a, b) => a.arrivalLocation.name.compareTo(b.arrivalLocation.name),
+          );
+          break;
+        case RideSortType.requestedSeats:
+          rides.sort((a, b) => b.availableSeats.compareTo(a.availableSeats));
+          break;
+      }
     }
 
-    return filteredRides;
+    return rides;
   }
 }

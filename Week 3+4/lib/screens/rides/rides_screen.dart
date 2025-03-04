@@ -1,56 +1,73 @@
 import 'package:flutter/material.dart';
-import 'package:week_3_blabla_project/model/ride/locations.dart';
-import '../../service/rides_service.dart';
+ 
+import '../../dummy_data/dummy_data.dart';
 import '../../model/ride/ride.dart';
 import '../../model/ride_pref/ride_pref.dart';
+import '../../service/rides_service.dart';
+import '../../theme/theme.dart';
+ 
+import 'widgets/ride_pref_bar.dart';
+import 'widgets/rides_tile.dart';
 
+///
+///  The Ride Selection screen allow user to select a ride, once ride preferences have been defined.
+///  The screen also allow user to re-define the ride preferences and to activate some filters.
+///
 class RidesScreen extends StatefulWidget {
+  const RidesScreen({super.key});
+
   @override
-  _RidesScreenState createState() => _RidesScreenState();
+  State<RidesScreen> createState() => _RidesScreenState();
 }
 
 class _RidesScreenState extends State<RidesScreen> {
-  late List<Ride> rides;
+ 
+  RidePreference currentPreference  = fakeRidePrefs[0];   // TODO 1 :  We should get it from the service
 
-  @override
-  void initState() {
-    super.initState();
-    final preference = RidePreference(
-      departure: Location(name: "Battambang", country: Country.Cambodia),
-      arrival: Location(name: "Siem Reap", country: Country.Cambodia),
-      departureDate: DateTime.now(),
-      requestedSeats: 1,
-    );
-    rides = RidesService().getRides(preference, null); // ✅ Fix: Pass correct arguments
+  final RidesService ridesService = RidesService();
+  List<Ride> get matchingRides => ridesService.getRidesFor(currentPreference);
+
+  void onBackPressed() {
+    Navigator.of(context).pop();     //  Back to the previous view
+  } 
+
+  void onPreferencePressed() async {
+        // TODO  6 : we should push the modal with the current pref
+
+        // TODO 9 :  After pop, we should get the new current pref from the modal 
+
+        // TODO 10 :  Then we should update the service current pref,   and update the view
+  }
+
+  void onFilterPressed() {
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Available Rides")),
-      body: ListView.builder(
-        itemCount: rides.length,
-        itemBuilder: (context, index) {
-          final ride = rides[index];
-          return Card(
-            child: ListTile(
-              title: Text("${ride.departureLocation.name} → ${ride.arrivalLocation.name}"),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Departure: ${ride.departureDate}"),
-                  Text("Arrival: ${ride.arrivalDate}"),
-                  Text("Duration: ${ride.duration.inHours} hrs"),
-                  Text("Driver: ${ride.driver}"),
-                  Text("Accept Pets: ${ride.acceptPets ? 'Yes' : 'No'}"),
-                  Text("Seats Available: ${ride.availableSeats}"),
-                  Text("Price: \$${ride.pricePerSeat.toStringAsFixed(2)}"),
-                ],
+        body: Padding(
+      padding: const EdgeInsets.only(
+          left: BlaSpacings.m, right: BlaSpacings.m, top: BlaSpacings.s),
+      child: Column(
+        children: [
+          // Top search Search bar
+          RidePrefBar(
+              ridePreference: currentPreference,
+              onBackPressed: onBackPressed,
+              onPreferencePressed: onPreferencePressed,
+              onFilterPressed: onFilterPressed),
+
+          Expanded(
+            child: ListView.builder(
+              itemCount: matchingRides.length,
+              itemBuilder: (ctx, index) => RideTile(
+                ride: matchingRides[index],
+                onPressed: () {},
               ),
             ),
-          );
-        },
+          ),
+        ],
       ),
-    );
+    ));
   }
 }
