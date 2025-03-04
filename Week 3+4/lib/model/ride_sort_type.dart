@@ -1,0 +1,1 @@
+enum RideSortType { departureTime, price }

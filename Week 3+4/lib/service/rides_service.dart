@@ -1,4 +1,6 @@
 import 'package:week_3_blabla_project/model/ride_pref/ride_pref.dart';
+import 'package:week_3_blabla_project/model/ridefilter.dart';
+import 'package:week_3_blabla_project/repository/ride_repository.dart';
 
 import '../dummy_data/dummy_data.dart';
 import '../model/ride/ride.dart';
@@ -12,7 +14,9 @@ class RidesService {
   static final RidesService _instance = RidesService._internal();
 
   // Private constructor
-  RidesService._internal();
+  RidesRepository? _repository;
+    RidesService._internal();
+
 
   // Factory constructor to return the singleton instance
   factory RidesService() {
@@ -25,15 +29,17 @@ class RidesService {
   ///
   ///  Return the relevant rides, given the passenger preferences
   ///
-  List<Ride> getRidesFor(RidePreference preferences) {
-    // For now, just a test
-    return availableRides
-        .where((ride) =>
-            ride.departureLocation == preferences.departure &&
-            ride.arrivalLocation == preferences.arrival)
-        .toList();
+   void initialize(RidesRepository repository) {
+    _repository = repository;
+  }
+
+  List<Ride> getRides(RidePreference preference, RidesFilter? filter) {
+    if (_repository == null) {
+      throw Exception("RidesService not initialized with a repository.");
+    }
+    return _repository!.getRides(preference, filter);
   }
   
-
+  
 
 }

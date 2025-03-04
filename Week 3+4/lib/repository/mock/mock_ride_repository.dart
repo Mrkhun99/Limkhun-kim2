@@ -1,67 +1,57 @@
-import 'package:week_3_blabla_project/model/ridefilter.dart';
-
-import '../../dummy_data/dummy_data.dart';
+import 'package:week_3_blabla_project/repository/ride_repository.dart';
 import '../../model/ride/ride.dart';
 import '../../model/ride_pref/ride_pref.dart';
-import '../../service/rides_service.dart';
-import '../ride_repository.dart';
+import '../../model/ridefilter.dart';
+import '../../model/ride/locations.dart';
 
 class MockRideRepository implements RidesRepository {
-  final List<RidePreference> _ridePreferences = [
-    RidePreference(
-      departure: fakeLocations[40], // Battambang
-      arrival: fakeLocations[39], // Siem Reap
+  final List<Ride> _rides = [
+    Ride(
+      departureLocation: Location(name: "Battambang", country: Country.Cambodia),
       departureDate: DateTime.now().add(Duration(hours: 5, minutes: 30)),
-      requestedSeats: 2,
+      arrivalLocation: Location(name: "Siem Reap", country: Country.Cambodia),
+      arrivalDate: DateTime.now().add(Duration(hours: 8)),
+      driver: "Kannika",
+      duration: Duration(hours: 2),
+      acceptPets: false,
+      availableSeats: 2,
+      pricePerSeat: 10.0,
     ),
-    RidePreference(
-      departure: fakeLocations[40], // Battambang
-      arrival: fakeLocations[39], // Siem Reap
+    Ride(
+      departureLocation: Location(name: "Battambang", country: Country.Cambodia),
       departureDate: DateTime.now().add(Duration(hours: 8)),
-      requestedSeats: 0,
+      arrivalLocation: Location(name: "Siem Reap", country: Country.Cambodia),
+      arrivalDate: DateTime.now().add(Duration(hours: 10)),
+      driver: "Chaylim",
+      duration: Duration(hours: 2),
+      acceptPets: false,
+      availableSeats: 0,
+      pricePerSeat: 8.0,
     ),
-    RidePreference(
-      departure: fakeLocations[40], // Battambang
-      arrival: fakeLocations[39], // Siem Reap
+    Ride(
+      departureLocation: Location(name: "Battambang", country: Country.Cambodia),
       departureDate: DateTime.now().add(Duration(hours: 5)),
-      requestedSeats: 1,
+      arrivalLocation: Location(name: "Siem Reap", country: Country.Cambodia),
+      arrivalDate: DateTime.now().add(Duration(hours: 7)),
+      driver: "Mengtech",
+      duration: Duration(hours: 3),
+      acceptPets: false,
+      availableSeats: 1,
+      pricePerSeat: 12.0,
     ),
-    RidePreference(
-      departure: fakeLocations[40], // Battambang
-      arrival: fakeLocations[39], // Siem Reap
-      departureDate: DateTime.now().add(Duration(hours: 8)),
-      requestedSeats: 2,
-    ),
-    RidePreference(
-      departure: fakeLocations[40], // Battambang
-      arrival: fakeLocations[39], // Siem Reap
-      departureDate: DateTime.now().add(Duration(hours: 5)),
-      requestedSeats: 1,
-    ),
-  ];
-
-  final List<RidesFilter> _ridesFilter = [
-    RidesFilter(
-      petAccepted: false,
-    ),
-        RidesFilter(
-      petAccepted: false,
-    ),
-        RidesFilter(
-      petAccepted: false,
-    ),
-        RidesFilter(
-      petAccepted: true,
-    ),
-        RidesFilter(
-      petAccepted: false,
-    ),
-    
   ];
 
   @override
   List<Ride> getRides(RidePreference preference, RidesFilter? filter) {
-    final ridesService = RidesService();
-    return ridesService.getRidesFor(preference);
+    List<Ride> filteredRides = _rides.where((ride) {
+      return ride.departureLocation.name == preference.departure.name &&
+             ride.arrivalLocation.name == preference.arrival.name;
+    }).toList();
+
+    if (filter != null && filter.petAccepted) {
+      filteredRides = filteredRides.where((ride) => ride.acceptPets).toList();
+    }
+
+    return filteredRides;
   }
 }

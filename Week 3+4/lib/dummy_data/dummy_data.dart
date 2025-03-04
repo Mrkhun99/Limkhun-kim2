@@ -1,14 +1,13 @@
-import '../model/ride/locations.dart';
-import '../model/ride/ride.dart';
-import '../model/ride_pref/ride_pref.dart';
-import '../model/user/user.dart';
+
+import 'package:week_3_blabla_project/model/ride/locations.dart';
+import 'package:week_3_blabla_project/model/ride/ride.dart';
+import 'package:week_3_blabla_project/model/ride_pref/ride_pref.dart';
+import 'package:week_3_blabla_project/model/user/user.dart';
 import 'dart:math';
 
 final Random random = Random();
 
-///
 /// FACE DATA FOR TEST PURPOSE
-///
 
 // Fake Cities
 const List<Location> fakeLocations = [
@@ -55,47 +54,29 @@ const List<Location> fakeLocations = [
   Location(name: "Brest", country: Country.france),
 ];
 
-// Fake Ride Preferences
+// Fake Ride Preferences (Fixed incorrect location indices)
 List<RidePreference> fakeRidePrefs = [
   RidePreference(
     departure: fakeLocations[0], // London
     departureDate: DateTime.now().add(Duration(days: 1)), // Tomorrow
-    arrival: fakeLocations[3], // Paris
+    arrival: fakeLocations[20], // Paris
     requestedSeats: 2,
   ),
   RidePreference(
     departure: fakeLocations[1], // Manchester
     departureDate: DateTime.now().add(Duration(days: 7)), // Next week
-    arrival: fakeLocations[4], // Lyon
+    arrival: fakeLocations[21], // Lyon
     requestedSeats: 3,
   ),
   RidePreference(
     departure: fakeLocations[2], // Birmingham
     departureDate: DateTime.now(), // Today
-    arrival: fakeLocations[5], // Marseille
-    requestedSeats: 1,
-  ),
-  RidePreference(
-    departure: fakeLocations[0], // London
-    departureDate: DateTime.now().add(Duration(days: 1)), // Tomorrow
-    arrival: fakeLocations[3], // Paris
-    requestedSeats: 2,
-  ),
-  RidePreference(
-    departure: fakeLocations[4], // Manchester
-    departureDate: DateTime.now().add(Duration(days: 7)), // Next week
-    arrival: fakeLocations[0], // Lyon
-    requestedSeats: 3,
-  ),
-  RidePreference(
-    departure: fakeLocations[5], // Birmingham
-    departureDate: DateTime.now(), // Today
-    arrival: fakeLocations[1], // Marseille
+    arrival: fakeLocations[22], // Marseille
     requestedSeats: 1,
   ),
 ];
 
-// Fake  Users
+// Fake Users
 List<User> fakeUsers = [
   User(
     firstName: "Alice",
@@ -129,26 +110,9 @@ List<User> fakeUsers = [
     profilePicture: "https://randomuser.me/api/portraits/women/4.jpg",
     verifiedProfile: true,
   ),
-  User(
-    firstName: "Ethan",
-    lastName: "Brown",
-    email: "ethan.brown@example.com",
-    phone: "+44 785412369",
-    profilePicture: "https://randomuser.me/api/portraits/men/5.jpg",
-    verifiedProfile: false,
-  ),
-  User(
-    firstName: "Fanny",
-    lastName: "Durand",
-    email: "fanny.durand@example.com",
-    phone: "+33 675839201",
-    profilePicture: "https://randomuser.me/api/portraits/women/6.jpg",
-    verifiedProfile: true,
-  ),
 ];
 
-// Fake  Rides
-
+// Fake Rides
 List<Ride> fakeRides = List.generate(50, (index) {
   // Select random locations for departure & arrival (ensuring they are different)
   Location departureLocation =
@@ -165,22 +129,24 @@ List<Ride> fakeRides = List.generate(50, (index) {
   DateTime departureTime = DateTime.now().add(
     Duration(days: random.nextInt(10), hours: random.nextInt(24)),
   );
-  DateTime arrivalTime = departureTime.add(
-    Duration(hours: random.nextInt(5) + 2),
-  ); // Rides take 2-6 hours
-  int availableSeats = random.nextInt(4) + 1; // Between 1 and 4 seats
-   double pricePerSeat =
-      (random.nextDouble() * 20 + 5)
-          .roundToDouble(); // Price between 5€ and 25€
+  int rideDurationHours = random.nextInt(5) + 2; // Rides take 2-6 hours
+  DateTime arrivalTime =
+      departureTime.add(Duration(hours: rideDurationHours));
 
-          
+  int availableSeats = random.nextInt(4) + 1; // Between 1 and 4 seats
+  double pricePerSeat =
+      (random.nextDouble() * 20 + 5).roundToDouble(); // Price between 5€ and 25€
+  bool acceptPets = random.nextBool(); // Random boolean for pet acceptance
+
   return Ride(
     departureLocation: departureLocation,
     departureDate: departureTime,
     arrivalLocation: arrivalLocation,
-    arrivalDateTime: arrivalTime,
-    driver: driver,
+    arrivalDate: arrivalTime,
+    duration: Duration(hours: rideDurationHours), // Fixed incorrect type
+    driver: "${driver.firstName} ${driver.lastName}", // Fixed incorrect type
     availableSeats: availableSeats,
     pricePerSeat: pricePerSeat,
+    acceptPets: acceptPets,
   );
 });

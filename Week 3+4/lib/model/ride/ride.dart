@@ -14,14 +14,15 @@ enum RideStatus {
 /// This model describes a  Ride.
 ///
 class Ride {
-  final Location departureLocation;
-  final DateTime departureDate;
+ 
 
+   final Location departureLocation;
+  final DateTime departureDate;  
   final Location arrivalLocation;
-  final DateTime arrivalDateTime;
-
-  final User driver;
-
+  final DateTime arrivalDate; 
+  final String driver;
+  final Duration duration;
+  final bool acceptPets;
   final int availableSeats;
   final double pricePerSeat;
 
@@ -30,11 +31,13 @@ class Ride {
   final List<User> passengers = [];
 
   Ride({
-    required this.departureLocation,
+       required this.departureLocation,
     required this.departureDate,
     required this.arrivalLocation,
-    required this.arrivalDateTime,
+    required this.arrivalDate,
     required this.driver,
+    required this.duration,
+    required this.acceptPets,
     required this.availableSeats,
     required this.pricePerSeat,
   });
@@ -47,8 +50,8 @@ class Ride {
 
   @override
   String toString() {
-    return 'Ride from $departureLocation at ${DateTimeUtils.formatDateTime(departureDate)} '
-        'to $arrivalLocation arriving at ${DateTimeUtils.formatDateTime(arrivalDateTime)}, '
-        'Driver: $driver, Seats: $availableSeats, Price: \$${pricePerSeat.toStringAsFixed(2)}';
+    return '$departureLocation → $arrivalLocation | $departureDate | '
+           'Duration: ${duration.inHours} hrs | Driver: $driver | Pets: $acceptPets | '
+           'Seats: $availableSeats | Price: \$${pricePerSeat.toStringAsFixed(2)}';
   }
 }
