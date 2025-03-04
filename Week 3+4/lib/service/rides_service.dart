@@ -8,17 +8,32 @@ import '../model/ride/ride.dart';
 ///   - The list of available rides
 ///
 class RidesService {
+  // Singleton instance
+  static final RidesService _instance = RidesService._internal();
 
-  static List<Ride> availableRides = fakeRides;  
+  // Private constructor
+  RidesService._internal();
 
+  // Factory constructor to return the singleton instance
+  factory RidesService() {
+    return _instance;
+  }
+
+  // Instance variables instead of static variables
+  List<Ride> availableRides = fakeRides;
 
   ///
   ///  Return the relevant rides, given the passenger preferences
   ///
-  static List<Ride> getRidesFor(RidePreference preferences) {
- 
+  List<Ride> getRidesFor(RidePreference preferences) {
     // For now, just a test
-    return availableRides.where( (ride) => ride.departureLocation == preferences.departure && ride.arrivalLocation == preferences.arrival).toList();
+    return availableRides
+        .where((ride) =>
+            ride.departureLocation == preferences.departure &&
+            ride.arrivalLocation == preferences.arrival)
+        .toList();
   }
- 
+  
+
+
 }
