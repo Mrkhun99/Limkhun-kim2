@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:week_3_blabla_project/week5/Exercise2/provider-example/provider/count_notifier.dart';
+import 'counter.dart';
+import 'static.dart';
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CounterModel>(
-      builder: (BuildContext context, counter, Widget? child) {
-        return Column(
-          children: [
-            Text("Count =  ${counter.count}"),
-            ElevatedButton(
-              onPressed: () => {counter.increment()},
-              child: Text("ADD 1"),
-            ),
-          ],
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(title: Text("Color Counter App")),
+      body: Column(
+        children: [
+          StaticScreen(), 
+          CounterScreen(), ],
+      ),
     );
   }
 }
