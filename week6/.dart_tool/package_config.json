@@ -104,22 +104,10 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "nested",
-      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/nested-1.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "path",
       "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/path-1.9.1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
-    },
-    {
-      "name": "provider",
-      "rootUri": "file:///C:/Users/Lenovo/AppData/Local/Pub/Cache/hosted/pub.dev/provider-6.1.2",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
     },
     {
       "name": "sky_engine",
@@ -182,7 +170,7 @@
       "languageVersion": "3.7"
     }
   ],
-  "generated": "2025-03-18T08:09:40.307135Z",
+  "generated": "2025-03-18T08:18:01.864658Z",
   "generator": "pub",
   "generatorVersion": "3.7.0",
   "flutterRoot": "file:///D:/CADT%20year%203%20term%201/Fundamental%20of%20Mobile%20Development/FLUT/flutter",
