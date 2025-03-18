@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../model/post.dart';
 import '../providers/async_value.dart';
 import '../providers/post_provider.dart';
@@ -10,41 +9,51 @@ class PostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //  1 - Get the post provider
+    // 1 - Get the post provider
     final PostProvider postProvider = Provider.of<PostProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
+        title: const Text("Posts"),
         actions: [
           IconButton(
-            // 2- Fetch the post
-            onPressed: () => {postProvider.fetchPost(45)},
-            icon: const Icon(Icons.update),
+            // 2 - Fetch the list of posts
+            onPressed: postProvider.fetchPosts,
+            icon: const Icon(Icons.refresh),
           ),
         ],
       ),
 
-      // 3 -  Display the post
+      // 3 - Display the posts
       body: Center(child: _buildBody(postProvider)),
     );
   }
 
-  Widget _buildBody(PostProvider courseProvider) {
-    final postValue = courseProvider.postValue;
+  Widget _buildBody(PostProvider provider) {
+    final postValue = provider.postValue;
 
     if (postValue == null) {
-      return Text('Tap refresh to display post'); // display an empty state
+      return const Text('Tap refresh to display posts'); // Display an empty state
     }
 
     switch (postValue.state) {
       case AsyncValueState.loading:
-        return CircularProgressIndicator(); // display a progress
+        return const CircularProgressIndicator(); // Display a loading state
 
       case AsyncValueState.error:
-        return Text('Error: ${postValue.error}'); // display a error
+        return Text('Error: ${postValue.error}'); // Display an error message
 
       case AsyncValueState.success:
-        return PostCard(post: postValue.data!); // display the post
+        final posts = postValue.data!;
+        if (posts.isEmpty) {
+          return const Text("No posts for now"); // Display empty list message
+        }
+        return ListView.builder(
+          itemCount: posts.length,
+          itemBuilder: (context, index) {
+            return PostCard(post: posts[index]);
+          },
+        ); // Display the list of posts
     }
   }
 }
@@ -56,6 +65,9 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(title: Text(post.title), subtitle: Text(post.description));
+    return ListTile(
+      title: Text(post.title),
+      subtitle: Text(post.description),
+    );
   }
 }

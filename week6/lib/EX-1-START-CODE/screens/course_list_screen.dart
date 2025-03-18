@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/course.dart';
+import '../provider/course_provider.dart';
 import 'course_screen.dart';
 
 const Color mainColor = Colors.blue;
@@ -12,20 +14,18 @@ class CourseListScreen extends StatefulWidget {
 }
 
 class _CourseListScreenState extends State<CourseListScreen> {
-  final List<Course> _allCourses = [Course(name: 'HTML'), Course(name: 'JAVA')];
-
   void _editCourse(Course course) async {
     await Navigator.of(context).push<Course>(
       MaterialPageRoute(builder: (ctx) => CourseScreen(course: course)),
     );
 
-    setState(() {
-      // trigger a rebuild
-    });
+    setState(() {}); // Trigger rebuild
   }
 
   @override
   Widget build(BuildContext context) {
+    final courseProvider = Provider.of<CoursesProvider>(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -33,15 +33,14 @@ class _CourseListScreenState extends State<CourseListScreen> {
         title: const Text('SCORE APP', style: TextStyle(color: Colors.white)),
       ),
       body: ListView.builder(
-        itemCount: _allCourses.length,
-        itemBuilder:
-            (ctx, index) => Dismissible(
-              key: Key(_allCourses[index].name),
-              child: CourseTile(
-                course: _allCourses[index],
-                onEdit: _editCourse,
-              ),
-            ),
+        itemCount: courseProvider.courses.length,
+        itemBuilder: (ctx, index) => Dismissible(
+          key: Key(courseProvider.courses[index].name),
+          child: CourseTile(
+            course: courseProvider.courses[index],
+            onEdit: _editCourse,
+          ),
+        ),
       ),
     );
   }
@@ -55,9 +54,7 @@ class CourseTile extends StatelessWidget {
 
   int get numberOfScores => course.scores.length;
 
-  String get numberText {
-    return course.hasScore ? "$numberOfScores scores" : 'No score';
-  }
+  String get numberText => course.hasScore ? "$numberOfScores scores" : 'No score';
 
   String get averageText {
     String average = course.average.toStringAsFixed(1);

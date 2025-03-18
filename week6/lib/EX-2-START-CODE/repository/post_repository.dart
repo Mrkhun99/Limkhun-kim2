@@ -1,5 +1,5 @@
-import '../model/post.dart';
+import 'package:week6/EX-2-START-CODE/model/post.dart';
 
 abstract class PostRepository {
-  Future<Post> getPost(int postId);
+  Future<List<Post>> getPosts(); // Fetch a list of posts
 }

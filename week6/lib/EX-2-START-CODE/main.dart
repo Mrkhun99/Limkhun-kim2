@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
-import 'repository/mock_post_repository.dart';
-import 'repository/post_repository.dart';
 import 'package:provider/provider.dart';
-
-import 'ui/providers/post_provider.dart';
-import 'ui/screens/post_screen.dart';
+import 'package:week6/EX-2-START-CODE/repository/http_posts_repository.dart';
+import 'package:week6/EX-2-START-CODE/ui/providers/post_provider.dart';
+import 'package:week6/EX-2-START-CODE/ui/screens/post_screen.dart';
 
 void main() {
-  // 1- Create the repository
-  PostRepository postRepo = MockPostRepository();
-
-  // 2 - Run the UI
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => PostProvider(repository: postRepo),
-      child: MaterialApp(debugShowCheckedModeBanner: false, home: PostScreen()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => PostProvider(repository: HttpPostRepository())),
+      ],
+      child: const MyApp(),
     ),
   );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: const PostScreen(),
+    );
+  }
 }
