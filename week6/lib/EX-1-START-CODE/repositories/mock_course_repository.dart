@@ -3,9 +3,9 @@ import '../models/course.dart';
 
 class CoursesMockRepository implements CoursesRepository {
   final List<Course> _courses = [
-    Course(name: "Math"),
-    Course(name: "Science"),
-    Course(name: "History"),
+    Course(name: "HTML"),
+    Course(name: "Java"),
+    Course(name: "Flutter"),
   ];
 
   @override
