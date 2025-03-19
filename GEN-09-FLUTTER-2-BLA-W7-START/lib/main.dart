@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'repository/mock/mock_locations_repository.dart';
 import 'repository/mock/mock_rides_repository.dart';
 import 'service/locations_service.dart';
