@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:week_3_blabla_project/provider/ride_pref_provider.dart';
+import 'package:week_3_blabla_project/ui/provider/ride_pref_provider.dart';
 import 'package:week_3_blabla_project/ui/widgets/error/bla_error_screen.dart';
-import '../../../model/ride/ride_pref.dart';
+import '../../../Domain/model/ride/ride_pref.dart';
 import '../../../utils/animations_util.dart';
 import '../rides/rides_screen.dart';
 import 'widgets/ride_pref_form.dart';

@@ -1,4 +1,4 @@
-import '../model/ride/ride_pref.dart';
+import '../../Domain/model/ride/ride_pref.dart';
 
 abstract class RidePreferencesRepository {
   Future<List<RidePreference>> getPastPreferences(); // Changed to Future

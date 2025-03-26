@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:week_3_blabla_project/provider/ride_pref_provider.dart';
+import 'package:week_3_blabla_project/ui/provider/ride_pref_provider.dart';
 
 class RidesScreen extends StatelessWidget {
   const RidesScreen({super.key});

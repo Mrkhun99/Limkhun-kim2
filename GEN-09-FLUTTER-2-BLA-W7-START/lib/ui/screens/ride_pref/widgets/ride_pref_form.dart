@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:week_3_blabla_project/provider/ride_pref_provider.dart';
+import 'package:week_3_blabla_project/ui/provider/ride_pref_provider.dart';
 
-import '../../../../model/location/locations.dart';
-import '../../../../model/ride/ride_pref.dart';
+import '../../../../Domain/model/location/locations.dart';
+import '../../../../Domain/model/ride/ride_pref.dart';
 import '../../../theme/theme.dart';
 import '../../../../utils/animations_util.dart';
 import '../../../../utils/date_time_util.dart';

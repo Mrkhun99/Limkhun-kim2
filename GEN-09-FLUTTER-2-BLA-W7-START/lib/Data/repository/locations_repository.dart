@@ -1,4 +1,4 @@
-import '../model/location/locations.dart';
+import '../../Domain/model/location/locations.dart';
 
 abstract class LocationsRepository {
   List<Location> getLocations();

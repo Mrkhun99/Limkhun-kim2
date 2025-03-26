@@ -1,4 +1,4 @@
-import '../../model/location/locations.dart';
+import '../../../Domain/model/location/locations.dart';
 import '../locations_repository.dart';
 
 class MockLocationsRepository extends LocationsRepository {
