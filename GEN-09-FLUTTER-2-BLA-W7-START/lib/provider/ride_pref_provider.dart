@@ -4,34 +4,44 @@ import '../repository/ride_preferences_repository.dart';
 
 class RidesPreferencesProvider extends ChangeNotifier {
   RidePreference? _currentPreference;
-  List<RidePreference> _pastPreferences = [];
   final RidePreferencesRepository repository;
+  List<RidePreference> _pastPreferences = [];
+  bool _isLoading = false;
+  bool _hasError = false;
 
   RidesPreferencesProvider({required this.repository}) {
-    _fetchPastPreferences();
+    fetchPastPreferences();
   }
 
   RidePreference? get currentPreference => _currentPreference;
+  List<RidePreference> get pastPreferences => _pastPreferences;
+  bool get isLoading => _isLoading;
+  bool get hasError => _hasError;
 
-  List<RidePreference> get preferencesHistory => _pastPreferences.reversed.toList();
-
-  Future<void> _fetchPastPreferences() async {
-    _pastPreferences = await repository.getPastPreferences();
-    notifyListeners();
-  }
-
-  void setCurrentPreference(RidePreference pref) {
-    if (pref != _currentPreference) {
-      _currentPreference = pref;
-      _addPreference(pref);
+  Future<void> fetchPastPreferences() async {
+    try {
+      _isLoading = true;
+      _hasError = false;
       notifyListeners();
+
+      _pastPreferences = await repository.getPastPreferences();
+      
+      _isLoading = false;
+      notifyListeners();
+    } catch (error) {
+      _isLoading = false;
+      _hasError = true;
+      notifyListeners();
+      print("Error fetching preferences: $error");
     }
   }
 
-  void _addPreference(RidePreference preference) {
-    // Remove any existing identical preferences
-    _pastPreferences.removeWhere((p) => p == preference);
-    _pastPreferences.add(preference);
-    repository.addPreference(preference);
+  Future<void> setCurrentPreference(RidePreference pref) async {
+    if (_currentPreference == pref) return;
+
+    _currentPreference = pref;
+    await repository.addPreference(pref);
+    await fetchPastPreferences();
+    notifyListeners();
   }
 }

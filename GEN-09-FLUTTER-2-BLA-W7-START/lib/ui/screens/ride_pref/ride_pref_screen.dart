@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:week_3_blabla_project/provider/ride_pref_provider.dart';
-
+import 'package:week_3_blabla_project/ui/widgets/error/bla_error_screen.dart';
 import '../../../model/ride/ride_pref.dart';
-import '../../theme/theme.dart';
 import '../../../utils/animations_util.dart';
 import '../rides/rides_screen.dart';
 import 'widgets/ride_pref_form.dart';
@@ -16,89 +15,133 @@ class RidePrefScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<RidesPreferencesProvider>();
+
+    if (provider.isLoading) return _buildLoadingState();
+    if (provider.hasError) return _buildErrorState();
+    if (provider.pastPreferences.isEmpty) return _buildEmptyState();
+
+    return _buildMainContent(context, provider);
+  }
+
+  Widget _buildLoadingState() {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return const BlaError(message: 'Failed to load preferences. Please try again.');
+  }
+
+  Widget _buildEmptyState() {
+    return const BlaError(message: 'No ride preferences found.');
+  }
+
+  Widget _buildMainContent(BuildContext context, RidesPreferencesProvider provider) {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Image
-          const BlaBackground(),
-          
-          // Foreground Content
-          Column(
-            children: [
-              SizedBox(height: BlaSpacings.m),
-              Text(
-                "Your pick of rides at low price",
-                style: BlaTextStyles.heading.copyWith(color: Colors.white),
-              ),
-              SizedBox(height: 100),
-              _buildFormContent(context),
-            ],
+          Positioned.fill(
+            child: Image.asset(
+              blablaHomeImagePath,
+              fit: BoxFit.cover,
+              height: 340,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 60),
+                Text(
+                  "Your pick of rides at low prices",
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 24),
+                _buildFormCard(context, provider),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildFormContent(BuildContext context) {
-    final provider = context.watch<RidesPreferencesProvider>();
-    
+  Widget _buildFormCard(BuildContext context, RidesPreferencesProvider provider) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: BlaSpacings.xxl),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          RidePrefForm(
-            initialPreference: provider.currentPreference,
-            onSubmit: (newPref) => _onRidePrefSelected(context, newPref),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: RidePrefForm(
+              initialPreference: provider.currentPreference,
+              onSubmit: (pref) => _handlePrefSelected(context, pref, provider),
+            ),
           ),
-          SizedBox(height: BlaSpacings.m),
-          _buildHistoryList(context),
+          if (provider.pastPreferences.isNotEmpty) ...[
+            const Divider(height: 1),
+            const Padding(
+              padding: EdgeInsets.only(left: 16, top: 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Recent searches',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 200,
+              child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: 16),
+                itemCount: provider.pastPreferences.length,
+                itemBuilder: (_, index) => RidePrefHistoryTile(
+                  ridePref: provider.pastPreferences[index],
+                  onPressed: () => _handlePrefSelected(
+                    context, 
+                    provider.pastPreferences[index],
+                    provider,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildHistoryList(BuildContext context) {
-    final provider = context.watch<RidesPreferencesProvider>();
-    final history = provider.preferencesHistory;
-
-    return SizedBox(
-      height: 200,
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: history.length,
-        itemBuilder: (ctx, index) => RidePrefHistoryTile(
-          ridePref: history[index],
-          onPressed: () => _onRidePrefSelected(context, history[index]),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _onRidePrefSelected(BuildContext context, RidePreference newPref) async {
-    context.read<RidesPreferencesProvider>().setCurrentPreference(newPref);
-    await Navigator.of(context).push(
+  void _handlePrefSelected(
+    BuildContext context,
+    RidePreference pref,
+    RidesPreferencesProvider provider,
+  ) {
+    provider.setCurrentPreference(pref);
+    Navigator.push(
+      context,
       AnimationUtils.createBottomToTopRoute(const RidesScreen()),
-    );
-  }
-}
-
-class BlaBackground extends StatelessWidget {
-  const BlaBackground({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 340,
-      child: Image.asset(
-        blablaHomeImagePath,
-        fit: BoxFit.cover,
-      ),
     );
   }
 }
